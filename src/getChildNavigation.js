@@ -82,11 +82,15 @@ function getChildNavigation(navigation, childKey, getCurrentParentNavigation) {
     actions: actionCreators,
     getParam: createParamGetter(childRoute),
 
-    getChildNavigation: grandChildKey =>
-      getChildNavigation(children[childKey], grandChildKey, () => {
+    getChildNavigation: grandChildKey => {
+      if (!children[childKey]) {
+        return null;
+      }
+      return getChildNavigation(children[childKey], grandChildKey, () => {
         const nav = getCurrentParentNavigation();
         return nav && nav.getChildNavigation(childKey);
-      }),
+      });
+    },
 
     isFocused: () => {
       const currentNavigation = getCurrentParentNavigation();
